@@ -64,7 +64,7 @@
 						id: lesson.absid,
 						start,
 						title: `${lesson.navn ?? className}${lesson.lokale ? ` • ${lesson.lokale}` : ''}`,
-						url: `/modul/${lesson.absid}`
+						url: `/modul?absid=${lesson.absid}`
 					};
 				});
 				successCallback(events);
