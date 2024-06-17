@@ -2,6 +2,7 @@
 [![GitHub Downloads](https://img.shields.io/github/downloads/BetterLectio/BetterLectio-next/total?style=for-the-badge)]()
 [![Issues](https://img.shields.io/github/issues/BetterLectio/BetterLectio-next?style=for-the-badge)]()
 [![LICENSE](https://img.shields.io/github/license/BetterLectio/BetterLectio-next?style=for-the-badge)]()
+
 # BetterLectio NEXT
 
 Den Bedste Lectio oplevelse!
@@ -40,3 +41,15 @@ Herunder er der en guide til hvordan du sætter et dev environment op.
 - [ ] Noter
 - [x] Beskeder
 - [x] Besked
+
+## Android TODO
+
+- [ ] fix auto-update på desktop (rust)
+- [ ] lav siden 100% mobil venlig (UI)
+- [ ] lav logo til appen i material design (android studio)
+- [ ] lav CI/CD workflow med github actions (github - uml)
+- [ ] evt. play store ??
+- [ ] evt. push notifikationer ??
+- [ ] evt. offline mode (vis brugeren at de er offline) ??
+
+_Kun når ovenstående er færdigt, kan vi merge til main branchen (evt er optional oc)_
