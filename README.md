@@ -44,7 +44,7 @@ Herunder er der en guide til hvordan du sætter et dev environment op.
 
 ## Android TODO
 
-- [ ] fix auto-update på desktop (rust)
+- [x] fix auto-update på desktop (rust)
 - [ ] lav siden 100% mobil venlig (UI)
 - [x] lav logo til appen i material design (android studio)
 - [ ] lav CI/CD workflow med github actions (github - uml)
