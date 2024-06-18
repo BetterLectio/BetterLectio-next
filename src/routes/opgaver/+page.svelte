@@ -59,18 +59,22 @@
 </script>
 
 <div class="page-container">
-	<div class="flex justify-between">
+	<div class="flex flex-wrap justify-between gap-4">
 		<div class="flex items-center space-x-2">
 			<h1>Opgaver</h1>
 			{#if !$assignmentStore}
 				<Spinner />
 			{/if}
 		</div>
-		<div class="flex items-center space-x-2">
-			<ValueSelect bind:value={status} items={['Alle', 'Skal Afleveres', 'Er Afleveret']} />
+		<div class="flex flex-col items-center gap-2 md:flex-row">
+			<ValueSelect
+				class=""
+				bind:value={status}
+				items={['Alle', 'Skal Afleveres', 'Er Afleveret']}
+			/>
 			<Input
 				type="text"
-				class="max-w-xs"
+				class="h-10"
 				placeholder="Søg efter opgaver..."
 				bind:value={searchString}
 				on:input={search}
