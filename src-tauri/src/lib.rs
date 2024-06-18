@@ -4,6 +4,8 @@
 use discord_rich_presence::{activity, DiscordIpc, DiscordIpcClient};
 use lazy_static::lazy_static;
 use std::sync::Mutex;
+
+#[cfg(desktop)]
 use tauri_plugin_autostart::MacosLauncher;
 //use reqwest::header::{HeaderMap, HeaderValue};
 //use scraper::{Html, Selector};
@@ -18,14 +20,15 @@ lazy_static! {
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
     tauri::Builder::default()
-        .plugin(tauri_plugin_autostart::init(
-            MacosLauncher::LaunchAgent,
-            Some(vec!["--flag1", "--flag2"]), /* arbitrary number of args to pass to your app */
-        ))
         .setup(|app| {
             #[cfg(desktop)]
             app.handle()
                 .plugin(tauri_plugin_updater::Builder::new().build())?;
+            #[cfg(desktop)]
+            app.handle().plugin(tauri_plugin_autostart::init(
+                MacosLauncher::LaunchAgent,
+                Some(vec!["--flag1", "--flag2"]), /* arbitrary number of args to pass to your app */
+            ))?;
             let discord_presence = set_discord_presence();
             match discord_presence {
                 Ok(presence) => {
