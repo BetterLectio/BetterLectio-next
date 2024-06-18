@@ -46,7 +46,7 @@ Herunder er der en guide til hvordan du sætter et dev environment op.
 
 - [ ] fix auto-update på desktop (rust)
 - [ ] lav siden 100% mobil venlig (UI)
-- [ ] lav logo til appen i material design (android studio)
+- [x] lav logo til appen i material design (android studio)
 - [ ] lav CI/CD workflow med github actions (github - uml)
 - [ ] evt. play store ??
 - [ ] evt. push notifikationer ??
