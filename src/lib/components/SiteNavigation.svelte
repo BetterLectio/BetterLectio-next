@@ -2,11 +2,16 @@
 	import { SidebarLink, SiteHeader } from '.';
 	import { loadingStore, sidebarStore } from '$lib/stores';
 	import { SITE_LINKS } from '$lib/links';
-	import * as Sheet from '$lib/components/ui/sheet';
+	import * as Drawer from '$lib/components/ui/drawer';
 	import { onMount } from 'svelte';
+	import { page } from '$app/stores';
 
 	let height = 0;
 	$: mainContentHeight = height; // - (document.getElementById('site-header')?.clientHeight ?? 0); // not needed since height is fixed (not in document flow)
+
+	$: if ($sidebarStore && isMobile) {
+		console.log($sidebarStore);
+	}
 
 	let timeoutId: number | null = null;
 	const mouseEnter = () => {
@@ -35,6 +40,10 @@
 		resize();
 		return () => window.removeEventListener('resize', resize);
 	});
+
+	$: if ($page.route) {
+		$sidebarStore.isOpen = false;
+	}
 </script>
 
 <svelte:window bind:innerHeight={height} />
@@ -71,18 +80,21 @@
 		</div>
 		<!-- only show if screen less than 640 px -->
 		{#if isMobile}
-			<Sheet.Root bind:open={$sidebarStore.isOpen}>
-				<Sheet.Content side="left" class="px-0">
-					<Sheet.Header>
-						<Sheet.Title></Sheet.Title>
-						<Sheet.Description>
-							{#each SITE_LINKS.main.links as link}
-								<SidebarLink {...link} on:click={() => ($sidebarStore.isOpen = false)} />
-							{/each}
-						</Sheet.Description>
-					</Sheet.Header>
-				</Sheet.Content>
-			</Sheet.Root>
+			<Drawer.Root
+				bind:open={$sidebarStore.isOpen}
+				shouldScaleBackground={true}
+				preventScroll={true}
+			>
+				<Drawer.Content>
+					<div class="py-10 pr-4">
+						{#each SITE_LINKS.main.links as link}
+							<Drawer.Close class="block w-full">
+								<SidebarLink {...link} />
+							</Drawer.Close>
+						{/each}
+					</div>
+				</Drawer.Content>
+			</Drawer.Root>
 		{/if}
 		<div
 			class="{$sidebarStore.alwaysOpen

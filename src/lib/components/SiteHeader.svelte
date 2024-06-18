@@ -29,7 +29,9 @@
 
 	const toggleSidebar = () => {
 		$sidebarStore.alwaysOpen = !$sidebarStore.alwaysOpen;
-		$sidebarStore.isOpen = $sidebarStore.alwaysOpen;
+		//get the current viewport width
+		const width = window.innerWidth;
+		$sidebarStore.isOpen = width > 640 ? $sidebarStore.alwaysOpen : !$sidebarStore.isOpen;
 	};
 </script>
 
