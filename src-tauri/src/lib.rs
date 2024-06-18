@@ -4,6 +4,7 @@
 use discord_rich_presence::{activity, DiscordIpc, DiscordIpcClient};
 use lazy_static::lazy_static;
 use std::sync::Mutex;
+use tauri_plugin_autostart::MacosLauncher;
 //use reqwest::header::{HeaderMap, HeaderValue};
 //use scraper::{Html, Selector};
 //use tauri::async_runtime::block_on;
@@ -17,8 +18,10 @@ lazy_static! {
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
     tauri::Builder::default()
-        //.plugin(tauri_plugin_http::init())
-        .plugin(tauri_plugin_updater::Builder::new().build())
+        .plugin(tauri_plugin_autostart::init(
+            MacosLauncher::LaunchAgent,
+            Some(vec!["--flag1", "--flag2"]), /* arbitrary number of args to pass to your app */
+        ))
         .setup(|app| {
             #[cfg(desktop)]
             app.handle()
