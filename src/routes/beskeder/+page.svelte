@@ -373,7 +373,7 @@
 					{#if filteredMessages.length}
 						{#each filteredMessages.slice(0, currentItems) as message}
 							<div
-								class="relative flex flex-row items-center p-4 cursor-pointer rounded-md transition-colors hover:bg-zinc-200 dark:hover:bg-dark-2 {selectedMessage ===
+								class="relative flex flex-row items-center py-4 md:px-4 cursor-pointer rounded-md transition-colors hover:bg-zinc-200 dark:hover:bg-dark-2 {selectedMessage ===
 								message.id
 									? 'bg-zinc-200 dark:bg-dark-2'
 									: ''}"
