@@ -24,18 +24,8 @@
 		$sidebarStore.isOpen = false;
 	};
 
-	let isMobile = false;
 	let width = 0;
-	onMount(() => {
-		const resize = () => {
-			width = window.innerWidth;
-			isMobile = width < 640;
-		};
-		// note: this is prolly not the most efficient way to do this, but idk, it works :)
-		window.addEventListener('resize', resize);
-		resize();
-		return () => window.removeEventListener('resize', resize);
-	});
+	$: isMobile = width < 640;
 
 	$: if ($page.route) {
 		$sidebarStore.isOpen = false;
@@ -44,7 +34,7 @@
 	$: drawerOpen = isMobile && $sidebarStore.isOpen;
 </script>
 
-<svelte:window bind:innerHeight={height} />
+<svelte:window bind:innerWidth={width} bind:innerHeight={height} />
 
 <div>
 	<SiteHeader />
