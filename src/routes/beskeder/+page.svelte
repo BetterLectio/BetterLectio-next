@@ -634,7 +634,7 @@
 													{/each}
 												</div>
 											{/if}
-											<div class="text-left break-all">
+											<div class="text-left break-words">
 												<SvelteMarkdown source={message.body} renderers={{ link: MessageLink }} />
 											</div>
 											{#if message.edits.length}
