@@ -44,6 +44,8 @@
 	$: if ($page.route) {
 		$sidebarStore.isOpen = false;
 	}
+
+	$: drawerOpen = isMobile && $sidebarStore.isOpen;
 </script>
 
 <svelte:window bind:innerHeight={height} />
@@ -79,23 +81,21 @@
 			</div>
 		</div>
 		<!-- only show if screen less than 640 px -->
-		{#if isMobile}
-			<Drawer.Root
-				bind:open={$sidebarStore.isOpen}
-				shouldScaleBackground={true}
-				preventScroll={true}
-			>
-				<Drawer.Content>
-					<div class="py-10 pr-4">
-						{#each SITE_LINKS.main.links as link}
-							<Drawer.Close class="block w-full">
-								<SidebarLink {...link} />
-							</Drawer.Close>
-						{/each}
-					</div>
-				</Drawer.Content>
-			</Drawer.Root>
-		{/if}
+		<Drawer.Root
+			bind:open={drawerOpen}
+			shouldScaleBackground={true}
+			preventScroll={true}
+		>
+			<Drawer.Content>
+				<div class="py-10 pr-4">
+					{#each SITE_LINKS.main.links as link}
+						<Drawer.Close class="block w-full">
+							<SidebarLink {...link} />
+						</Drawer.Close>
+					{/each}
+				</div>
+			</Drawer.Content>
+		</Drawer.Root>
 		<div
 			class="{$sidebarStore.alwaysOpen
 				? ''
