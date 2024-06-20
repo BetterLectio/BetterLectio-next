@@ -28,9 +28,9 @@
 	};
 
 	const toggleSidebar = () => {
-		$sidebarStore.alwaysOpen = !$sidebarStore.alwaysOpen;
-		//get the current viewport width
 		const width = window.innerWidth;
+		if (width > 640) $sidebarStore.alwaysOpen = !$sidebarStore.alwaysOpen;
+
 		$sidebarStore.isOpen = width > 640 ? $sidebarStore.alwaysOpen : !$sidebarStore.isOpen;
 	};
 </script>
@@ -49,7 +49,7 @@
 			<span class="sr-only">Skjul/vis sidepanel</span>
 		</Button>
 	</div>
-	<div class="{!isDesktop && 'page-container-x'} flex w-full">
+	<div class="{!isDesktop && 'page-container-x max-sm:pl-0'} flex w-full">
 		<div class="flex items-center pr-4 sm:pr-12" data-tauri-drag-region>
 			<a href="/" class="flex items-center gap-1 text-lg font-bold unstyled">
 				<img src="/favicon.png" alt="BetterLectio Logo" class="size-8" />
