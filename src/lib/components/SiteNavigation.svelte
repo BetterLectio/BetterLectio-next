@@ -9,10 +9,6 @@
 	let height = 0;
 	$: mainContentHeight = height; // - (document.getElementById('site-header')?.clientHeight ?? 0); // not needed since height is fixed (not in document flow)
 
-	$: if ($sidebarStore && isMobile) {
-		console.log($sidebarStore);
-	}
-
 	let timeoutId: number | null = null;
 	const mouseEnter = () => {
 		if ($sidebarStore.alwaysOpen) return;
