@@ -64,7 +64,7 @@
 	}
 </script>
 
-<div class="page-container">
+<div class="w-full page-container">
 	<div class="flex flex-col justify-between gap-4 md:flex-row">
 		<div class="flex items-center space-x-2">
 			<h1>Opgaver</h1>
@@ -72,7 +72,7 @@
 				<Spinner />
 			{/if}
 		</div>
-		<div class="flex flex-col items-center gap-2 sm:flex-row">
+		<div class="flex flex-col items-center w-full gap-2 lg:w-fit sm:flex-row">
 			<ValueSelect
 				class=""
 				bind:value={status}
@@ -80,7 +80,7 @@
 			/>
 			<Input
 				type="text"
-				class="h-10"
+				class="w-full h-10 lg:w-fit"
 				placeholder="Søg efter opgaver..."
 				bind:value={searchString}
 				on:input={search}
@@ -228,12 +228,12 @@
 		</Table.Root>
 	{:else}
 		<!-- mobile version here, based on list not table, without tooltips -->
-		<div class="flex flex-col gap-2">
+		<div class="flex flex-col w-full gap-2">
 			{#if opgaver}
 				{#each opgaver as opgave}
 					<button
 						on:click={async () => await goto(`/opgave?id=${opgave.exerciseid}`)}
-						class="flex items-center justify-between p-2 border-[1px] gap-2 rounded-md shadow-md cursor-pointer border-border"
+						class="flex items-center w-full justify-between p-2 border-[1px] gap-2 rounded-md shadow-md cursor-pointer border-border"
 					>
 						<div class="flex items-start space-x-2">
 							<div class="flex items-start justify-start py-1">
