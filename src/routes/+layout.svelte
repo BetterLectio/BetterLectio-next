@@ -2,8 +2,8 @@
 	import '../app.pcss';
 
 	import { dev } from '$app/environment';
-	import { AccountSheet, Changelog, SiteNavigation, SiteSearch, Spinner } from '$lib/components';
 	import * as Alert from '$lib/components/ui/alert';
+	import { AccountSheet, Changelog, SiteNavigation, SiteSearch, Spinner } from '$lib/components';
 	import { Toaster } from '$lib/components/ui/sonner';
 	import { authStore } from '$lib/stores';
 	import { relaunch } from '@tauri-apps/plugin-process';
@@ -18,12 +18,13 @@
 	import { ModeWatcher } from 'mode-watcher';
 	import { page } from '$app/stores';
 	import { toTitleCase } from '$lib/utils/string';
+
 	Settings.defaultLocale = 'da';
 
 	$: hasCredentials =
 		$authStore.username !== null && $authStore.password !== null && $authStore.school !== null;
 
-	let PageRefresher = 0; // Used to refresh page when cookie is updated after is has been invalidated by lectio
+	let pageRefresher = 0; // Used to refresh page when cookie is updated after is has been invalidated by lectio
 
 	async function checkCookie() {
 		if (!hasCredentials) throw new Error('Credentials are not set');
@@ -40,10 +41,11 @@
 			$authStore.cookie = null;
 			await login();
 			console.log('Auth refreshed');
-			PageRefresher++; // Soft refresh page to use new cookie in slot
+			pageRefresher++; // Soft refresh page to use new cookie in slot
 
 			//check if cookie is valid
 			if ($authStore.cookie === null) {
+
 				throw new Error('Cookie is invalid');
 			}
 		}
@@ -58,8 +60,7 @@
 				skoleid: $authStore.school?.toString() || ''
 			}
 		});
-		let cookie = res.headers.get('Set-Lectio-Cookie');
-		$authStore.cookie = cookie;
+		$authStore.cookie = res.headers.get('Set-Lectio-Cookie');
 	}
 
 	onMount(async () => {
@@ -97,13 +98,13 @@
 <SiteSearch />
 <SiteNavigation>
 	{#if hasCredentials}
-		{#await (checkCookie(), $page.url.pathname)}
+		{#await checkCookie()}
 			<div class="flex items-center justify-center h-full">
 				<Spinner />
 			</div>
-		{:then}
+		{:then _}
 			<div class="mt-10">
-				{#key PageRefresher}
+				{#key pageRefresher}
 					<slot />
 				{/key}
 			</div>
@@ -113,11 +114,8 @@
 					<p>Dine login oplysninger er ugyldige</p>
 					<AccountSheet />
 				{:else}
-					<Alert.Root variant="destructive">
-						<ShieldAlert class="w-4 h-4" />
-						<Alert.Title>Fejl</Alert.Title>
-						<Alert.Description>Der skete en fejl, prøv at genindlæse siden</Alert.Description>
-					</Alert.Root>
+					<h2>Fejl</h2>
+					<p>Der skete en fejl, prøv at genindlæse siden</p>
 				{/if}
 			</div>
 		{/await}
