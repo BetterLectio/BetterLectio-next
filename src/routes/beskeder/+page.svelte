@@ -262,9 +262,14 @@
 	});
 
 	//make a thing that runs every 0.5 seconds
-	const interval = setInterval(() => {
+	let interval: number | undefined;
+
+	onMount(() => {
 		calcInputFieldWidth();
-	}, 100);
+		interval = setInterval(() => {
+			calcInputFieldWidth();
+		}, 100);
+	});
 
 	onDestroy(() => {
 		console.log('the component is being destroyed');
@@ -274,14 +279,14 @@
 	function calcInputFieldWidth() {
 		if (!selectedMessage) return;
 		width = document.getElementById('w-of-resp-input')?.offsetWidth ?? 0;
-		const element = document.getElementById('resp-input') as HTMLElement;
-		element.style.width = `${width + 28}px`;
+		const element = document.getElementById('resp-input');
+		if (element) element.style.width = `${width + 28}px`;
 	}
 </script>
 
 <svelte:window on:keydown={onWindowKeydown} bind:innerWidth={width} bind:innerHeight={height} />
 
-<div bind:this={container} class="lg:!pt-0 w-full flex flex-col lg:flex-row">
+<div bind:this={container} class="lg:!pt-0 flex flex-col lg:flex-row w-full">
 	<div bind:this={sidebar} style="transition: width 200ms ease;" class="flex-col w-full lg:flex">
 		<header use:melt={$root} class="p-4 border-b dark:border-white/10">
 			<div class="flex items-center">
@@ -383,7 +388,10 @@
 									replyTo = null;
 									replyContent = '';
 									selectedMessage = message.id;
-									goto(`/beskeder?id=${selectedMessage}`, { replaceState: true, keepFocus: true });
+									goto(`/beskeder?id=${selectedMessage}`, {
+										replaceState: true,
+										keepFocus: true
+									});
 								}}
 								on:keydown={() => {}}
 								role="button"
@@ -483,7 +491,10 @@
 		</div>
 	</div>
 	{#if selectedMessage}
-		<div class="flex flex-col w-full space-y-4 overflow-hidden border-l" transition:flyOrFade>
+		<div
+			class="flex flex-col w-screen space-y-4 overflow-hidden lg:border-l lg:w-full"
+			transition:flyOrFade
+		>
 			<section class="w-full pb-0">
 				<div class="flex items-center w-full p-3 py-3">
 					{#if fullMessage}
@@ -519,14 +530,14 @@
 			</section>
 			<section class="h-full p-4 py-0 overflow-y-hidden not-prose">
 				<div class="h-full space-y-4 overflow-y-auto pb-28">
+					<div
+						class="w-full"
+						id="w-of-resp-input"
+						on:change={() => {
+							calcInputFieldWidth();
+						}}
+					></div>
 					{#if fullMessage}
-						<div
-							class="w-full"
-							id="w-of-resp-input"
-							on:change={() => {
-								calcInputFieldWidth();
-							}}
-						></div>
 						{#each fullMessage.messages as message}
 							{#if message.sender.name === me?.name}
 								<div
