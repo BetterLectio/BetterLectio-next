@@ -43,7 +43,7 @@
 		? 'border-background'
 		: 'border-b'} border-border bg-background shadow-sm flex"
 >
-	<div class="w-[72px] flex items-center justify-center shrink-0" data-tauri-drag-region>
+	<div class="max-sm:pl-3 max-sm:pr-1 sm:w-[72px] flex items-center justify-center shrink-0" data-tauri-drag-region>
 		<Button on:click={toggleSidebar} class="size-8" variant="ghost" size="icon">
 			<AlignJustify class="size-5" />
 			<span class="sr-only">Skjul/vis sidepanel</span>
