@@ -14,7 +14,7 @@
 		DrawerFix
 	} from '$lib/components';
 	import { Toaster } from '$lib/components/ui/sonner';
-	import { authStore } from '$lib/stores';
+	import { authStore, connectionStore } from '$lib/stores';
 	import { relaunch } from '@tauri-apps/plugin-process';
 	import { check } from '@tauri-apps/plugin-updater';
 	import { toast } from 'svelte-sonner';
@@ -26,6 +26,7 @@
 	import { ModeWatcher } from 'mode-watcher';
 	import { page } from '$app/stores';
 	import { toTitleCase } from '$lib/utils/string';
+	import OfflineMode from '$lib/components/OfflineMode.svelte';
 
 	Settings.defaultLocale = 'da';
 
@@ -33,6 +34,12 @@
 		$authStore.username !== null && $authStore.password !== null && $authStore.school !== null;
 
 	let pageRefresher = 0; // Used to refresh page when cookie is updated after is has been invalidated by lectio
+
+	$: if ($connectionStore) {
+		// only works because it's a bool
+		console.log('device came online, refetching page content');
+		pageRefresher++;
+	}
 
 	async function checkCookie() {
 		if (!hasCredentials) throw new Error('Credentials are not set');
@@ -111,13 +118,14 @@
 <DrawerFix />
 <SiteSearch />
 <SiteNavigation>
+	<OfflineMode />
 	{#if hasCredentials}
 		{#await routeChange($page.url.pathname)}
 			<div class="flex items-center justify-center h-full">
 				<Spinner />
 			</div>
 		{:then _}
-			<div class="mt-10">
+			<div class="{$connectionStore ? 'mt-10' : 'mt-28'} transition-all duration-200 ease-in-out">
 				{#key pageRefresher}
 					<slot />
 				{/key}

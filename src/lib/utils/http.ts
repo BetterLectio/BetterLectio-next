@@ -1,5 +1,5 @@
 import { get as storeGet } from 'svelte/store';
-import { authStore, loadingStore } from '../stores';
+import { authStore, connectionStore, loadingStore } from '../stores';
 import { LECTIO_API } from '$lib/lectio';
 
 export function reloadData(reload = true) {
@@ -8,6 +8,7 @@ export function reloadData(reload = true) {
 }
 
 export async function get(endpoint: string, body: any = null): Promise<any | false> {
+	if (!storeGet(connectionStore)) return false;
 	loadingStore.set(true);
 	/* setTimeout(() => { //maybe not needed
 		loadingStore.set(false);
@@ -28,10 +29,10 @@ export async function get(endpoint: string, body: any = null): Promise<any | fal
 		body === null
 			? await fetch(url, { headers })
 			: await fetch(url, {
-				method: 'POST',
-				headers: { ...headers, 'Content-Type': 'application/json' },
-				body
-			});
+					method: 'POST',
+					headers: { ...headers, 'Content-Type': 'application/json' },
+					body
+				});
 	loadingStore.set(false);
 
 	const data = await response.json();
