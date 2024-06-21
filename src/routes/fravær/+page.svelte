@@ -1,15 +1,12 @@
 <script lang="ts">
-	import AbsenceBlock from '$lib/components/AbsenceBlock.svelte';
-	import Separator from '$lib/components/ui/separator/separator.svelte';
+	import AbsenceBlock from './_components/AbsenceBlock.svelte';
+	import { Separator } from '$lib/components/ui/separator';
 	import { VisSingleContainer, VisNestedDonut } from '@unovis/svelte';
-	import { absenceStore, authStore, avatarStore } from '$lib/stores';
-	import type { RawAbsence, SingleAbsence } from '$lib/types/absence';
-	import { get } from '$lib/utils/http';
-	import { NestedDonutDirection } from '@unovis/ts';
+	import { absenceStore, authStore } from '$lib/stores';
+	import type { SingleAbsence } from '$lib/types/absence';
 	import * as Table from '$lib/components/ui/table';
-	import Progress from '$lib/components/ui/progress/progress.svelte';
+	import { Progress } from '$lib/components/ui/progress';
 	import * as Accordion from '$lib/components/ui/accordion';
-	import Button from '$lib/components/ui/button/button.svelte';
 	import NewTabLink from '$lib/components/links/NewTabLink.svelte';
 	import { decodeUserID } from '$lib/utils';
 	import { onMount } from 'svelte';

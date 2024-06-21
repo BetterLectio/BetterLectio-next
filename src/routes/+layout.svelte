@@ -3,7 +3,16 @@
 
 	import { dev } from '$app/environment';
 	import * as Alert from '$lib/components/ui/alert';
-	import { AccountSheet, Changelog, SiteNavigation, SiteSearch, Spinner, WelcomePage } from '$lib/components';
+	import {
+		AccountSheet,
+		Changelog,
+		SiteNavigation,
+		SiteSearch,
+		Spinner,
+		WelcomePage,
+		ScreenSize,
+		DrawerFix
+	} from '$lib/components';
 	import { Toaster } from '$lib/components/ui/sonner';
 	import { authStore } from '$lib/stores';
 	import { relaunch } from '@tauri-apps/plugin-process';
@@ -11,7 +20,6 @@
 	import { toast } from 'svelte-sonner';
 
 	import { LECTIO_API } from '$lib/lectio';
-	import ShieldAlert from 'lucide-svelte/icons/shield-alert';
 	import { Settings } from 'luxon';
 	import { onMount } from 'svelte';
 	import { isDesktop } from '$lib/utils/environment';
@@ -95,6 +103,8 @@
 <Toaster />
 <Changelog />
 <ModeWatcher />
+<ScreenSize />
+<DrawerFix />
 <SiteSearch />
 <SiteNavigation>
 	{#if hasCredentials}

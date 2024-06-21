@@ -1,13 +1,13 @@
 <script lang="ts">
 	import { SidebarLink, SiteHeader } from '.';
-	import { loadingStore, sidebarStore } from '$lib/stores';
+	import { loadingStore, screenSizeStore, sidebarStore } from '$lib/stores';
 	import { SITE_LINKS } from '$lib/links';
 	import * as Drawer from '$lib/components/ui/drawer';
 	import { onMount } from 'svelte';
 	import { page } from '$app/stores';
+	import { isSmallScreen } from '$lib/utils';
 
-	let height = 0;
-	$: mainContentHeight = height; // - (document.getElementById('site-header')?.clientHeight ?? 0); // not needed since height is fixed (not in document flow)
+	$: mainContentHeight = $screenSizeStore.height;
 
 	let timeoutId: number | null = null;
 	const mouseEnter = () => {
@@ -24,17 +24,12 @@
 		$sidebarStore.isOpen = false;
 	};
 
-	let width = 0;
-	$: isMobile = width < 640;
-
 	$: if ($page.route) {
 		$sidebarStore.isOpen = false;
 	}
 
-	$: drawerOpen = isMobile && $sidebarStore.isOpen;
+	$: drawerOpen = !$isSmallScreen && $sidebarStore.isOpen;
 </script>
-
-<svelte:window bind:innerWidth={width} bind:innerHeight={height} />
 
 <div>
 	<SiteHeader />
@@ -69,7 +64,6 @@
 		<!-- only show if screen less than 640 px -->
 		<Drawer.Root
 			bind:open={drawerOpen}
-			shouldScaleBackground={true}
 			preventScroll={true}
 		>
 			<Drawer.Content>

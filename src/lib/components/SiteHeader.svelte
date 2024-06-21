@@ -15,6 +15,7 @@
 	import { onMount } from 'svelte';
 	import * as DropdownMenu from '$lib/components/ui/dropdown-menu';
 	import { isDesktop } from '$lib/utils/environment';
+	import { isSmallScreen } from '$lib/utils';
 
 	let fullscreen = false;
 	onMount(async () => {
@@ -28,10 +29,9 @@
 	};
 
 	const toggleSidebar = () => {
-		const width = window.innerWidth;
-		if (width > 640) $sidebarStore.alwaysOpen = !$sidebarStore.alwaysOpen;
+		if ($isSmallScreen) $sidebarStore.alwaysOpen = !$sidebarStore.alwaysOpen;
 
-		$sidebarStore.isOpen = width > 640 ? $sidebarStore.alwaysOpen : !$sidebarStore.isOpen;
+		$sidebarStore.isOpen = $isSmallScreen ? $sidebarStore.alwaysOpen : !$sidebarStore.isOpen;
 	};
 </script>
 

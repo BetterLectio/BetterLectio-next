@@ -62,7 +62,6 @@
     "mode-watcher": "^0.1.2",
     "path": "^0.12.7",
     "svelte-intersection-observer": "^1.0.0",
-    "svelte-legos": "^0.2.3",
     "svelte-markdown": "",
     "svelte-radix": "^1.1.0",
     "svelte-sonner": "^0.3.22",

@@ -10,6 +10,7 @@ import type { RawAbsence } from './types/absence';
 import { localStore } from './utils/localStore';
 import { lectioDataStore } from '$lib/utils/lectioDataStore';
 
+export const screenSizeStore = writable({ width: window.innerWidth, height: window.innerHeight });
 export const sidebarStore = writable({ alwaysOpen: false, isOpen: false });
 export const avatarStore: Writable<Record<string, string>> = writable({});
 export const loadingStore = writable<boolean>(false);

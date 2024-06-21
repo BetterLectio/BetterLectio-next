@@ -18,6 +18,7 @@
 	import { toast } from 'svelte-sonner';
 	import tippy from 'tippy.js';
 	import 'tippy.js/animations/shift-away.css';
+	import { isMediumScreen } from '$lib/utils';
 
 	const nameRegex = /^(?:[\w]+) (.*)(?:,.*)/;
 
@@ -78,7 +79,6 @@
 	};
 
 	let loading = true;
-	let width: number;
 	let calendarEl: HTMLElement;
 	let calendar: Calendar;
 	let showBackToWeekViewButton = false;
@@ -149,7 +149,7 @@
 				left: 'title',
 				right: 'today prev,next'
 			},
-			initialView: width >= 768 ? 'timeGridWeek' : 'timeGridDay',
+			initialView: $isMediumScreen ? 'timeGridWeek' : 'timeGridDay',
 			locale: daLocale,
 			nowIndicator: true,
 			plugins: [luxonPlugin, timeGridPlugin],
@@ -166,7 +166,7 @@
 			titleFormat: 'Uge W, yyyy',
 			weekends: false,
 			windowResize: function () {
-				calendar.changeView(width >= 768 ? 'timeGridWeek' : 'timeGridDay');
+				calendar.changeView($isMediumScreen ? 'timeGridWeek' : 'timeGridDay');
 			}
 		});
 
@@ -216,8 +216,6 @@
 		}
 	}
 </script>
-
-<svelte:window bind:innerWidth={width} />
 
 <div class="page-container">
 	<div class="flex items-center justify-between">

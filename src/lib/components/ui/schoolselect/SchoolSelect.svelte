@@ -1,20 +1,19 @@
 <script lang="ts">
-	import { flyAndScale, round } from '$lib/utils';
+	import { round } from '$lib/utils';
 	import { filter } from 'fuzzy';
 	import { ChevronsUpDown, Loader2, LocateIcon, X } from 'lucide-svelte';
-	import { FancyInput } from '../fancyinput';
 	import { Button } from '../button';
 	import { toast } from 'svelte-sonner';
 	import * as Drawer from '$lib/components/ui/drawer';
 	import { ScrollArea } from '$lib/components/ui/scroll-area/index.js';
 	import * as Dialog from '$lib/components/ui/dialog';
-	import { mediaQuery } from 'svelte-legos';
 
 	import { LECTIO_OAUTH_API } from '$lib/lectio';
 	import Input from '../input/input.svelte';
+	import type { ClosestSchool } from '$lib/types/location';
+	import { isMediumScreen } from '$lib/utils';
 
 	let open = false;
-	const isDesktop = mediaQuery('(min-width: 768px)');
 
 	export let schools: { [k: string]: number } = {};
 	export let value = 0;
@@ -41,7 +40,7 @@
 					return;
 				}
 
-				const data = await resp.json();
+				const data = await resp.json() as ClosestSchool;
 				value = data.id;
 				if (data.distance > 1000) closestSchool = `${round(data.distance / 1000, 2)}km`;
 				else closestSchool = `${round(data.distance)}m`;
@@ -55,7 +54,7 @@
 	};
 </script>
 
-{#if $isDesktop}
+{#if $isMediumScreen}
 	<Dialog.Root bind:open>
 		<Dialog.Trigger asChild let:builder>
 			<Button variant="outline" builders={[builder]}>
@@ -86,7 +85,6 @@
 							on:click={() => {
 								value = schools[school.original];
 								open = false;
-								// open.set(false);
 							}}
 						>
 							{@html school.string}
@@ -97,7 +95,7 @@
 		</Dialog.Content>
 	</Dialog.Root>
 {:else}
-	<Drawer.Root bind:open>
+	<Drawer.Root bind:open preventScroll>
 		<Drawer.Trigger asChild let:builder>
 			<Button variant="outline" builders={[builder]}>
 				{#if value > 0}{valueKey}{:else}Vælg din skole{/if}
@@ -127,7 +125,6 @@
 							on:click={() => {
 								value = schools[school.original];
 								open = false;
-								// open.set(false);
 							}}
 						>
 							{@html school.string}
@@ -137,7 +134,7 @@
 			</ScrollArea>
 			<Drawer.Footer class="pt-2">
 				<Drawer.Close asChild let:builder>
-					<Button variant="outline" builders={[builder]}>Cancel</Button>
+					<Button variant="outline" builders={[builder]}>Afbryd</Button>
 				</Drawer.Close>
 			</Drawer.Footer>
 		</Drawer.Content>

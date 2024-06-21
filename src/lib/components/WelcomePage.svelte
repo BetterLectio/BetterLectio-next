@@ -216,7 +216,7 @@
 						on:click={login}
 					>
 						{#if loading}
-							<Spinner />
+							<Spinner class="mr-2" />
 						{/if}
 						Log ind
 					</Button>
