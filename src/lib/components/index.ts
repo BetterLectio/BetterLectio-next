@@ -7,3 +7,4 @@ export { default as SiteHeader } from './SiteHeader.svelte';
 export { default as SiteNavigation } from './SiteNavigation.svelte';
 export { default as SiteSearch } from './SiteSearch.svelte';
 export { default as Spinner } from './Spinner.svelte';
+export { default as WelcomePage } from './WelcomePage.svelte';

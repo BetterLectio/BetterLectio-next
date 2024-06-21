@@ -5,6 +5,11 @@ import type { TransitionConfig } from 'svelte/transition';
 import { DateTime, Interval } from 'luxon';
 import { Buffer } from 'buffer';
 
+export const round = (num: number, places = 0): number => {
+    const factor = 10 ** places
+    return Math.round(num * factor) / factor
+}
+
 export function cn(...inputs: ClassValue[]) {
 	return twMerge(clsx(inputs));
 }

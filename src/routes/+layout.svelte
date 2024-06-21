@@ -3,7 +3,7 @@
 
 	import { dev } from '$app/environment';
 	import * as Alert from '$lib/components/ui/alert';
-	import { AccountSheet, Changelog, SiteNavigation, SiteSearch, Spinner } from '$lib/components';
+	import { AccountSheet, Changelog, SiteNavigation, SiteSearch, Spinner, WelcomePage } from '$lib/components';
 	import { Toaster } from '$lib/components/ui/sonner';
 	import { authStore } from '$lib/stores';
 	import { relaunch } from '@tauri-apps/plugin-process';
@@ -120,9 +120,6 @@
 			</div>
 		{/await}
 	{:else}
-		<div class="flex flex-col items-center justify-center h-full">
-			<p>Din konto er ikke sat op</p>
-			<AccountSheet />
-		</div>
+		<WelcomePage />
 	{/if}
 </SiteNavigation>
