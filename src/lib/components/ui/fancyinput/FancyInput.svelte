@@ -1,13 +1,14 @@
 <script lang="ts">
-	import type { HTMLInputAttributes } from "svelte/elements";
+	import type { HTMLInputAttributes } from 'svelte/elements';
 
-	import { cn } from "$lib/utils";
+	import { cn } from '$lib/utils';
+	import Input from '../input/input.svelte';
 
 	let className: null | string | undefined = undefined;
 
-	export let value: HTMLInputAttributes["value"] = undefined;
+	export let value: HTMLInputAttributes['value'] = undefined;
 	export { className as class };
-	export let placeholder = "";
+	export let placeholder = '';
 
 	let input: HTMLInputElement;
 	let focused = false;
@@ -21,7 +22,7 @@
 
 		position = {
 			x: e.clientX - rect.left,
-			y: e.clientY - rect.top,
+			y: e.clientY - rect.top
 		};
 	};
 
@@ -48,10 +49,10 @@
 	<input
 		bind:value
 		class={cn(
-      "flex h-12 w-full rounded-md border border-slate-200 bg-neutral-50 text-slate-900 dark:border-slate-800 dark:bg-neutral-950 dark:text-slate-100 p-3.5 transition-colors duration-500 placeholder:select-none placeholder:text-neutral-500 focus:border-[#adffb9] dark:focus:border-[#8678F9] focus:outline-none",
-      className
-    )}
-		placeholder={placeholder}
+			'flex h-12 w-full rounded-md border border-input bg-background px-3 py-1 text-sm shadow-sm transition-colors file:border-0 file:bg-transparent file:text-foreground file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-0 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50',
+			className
+		)}
+		{placeholder}
 		on:blur={handleBlur}
 		on:focus={handleFocus}
 		on:mouseenter={handleMouseEnter}
@@ -62,7 +63,7 @@
 	<input
 		aria-hidden="true"
 		bind:this={input}
-		class="pointer-events-none absolute left-0 top-0 z-10 h-12 w-full cursor-default rounded-md border border-[#adffb9] dark:border-[#8678F9] bg-[transparent] p-3.5 transition-opacity duration-500 placeholder:select-none"
+		class="pointer-events-none absolute left-0 top-0 z-10 h-12 w-full cursor-default rounded-md border border-foreground bg-[transparent] p-3.5 transition-opacity duration-500 placeholder:select-none"
 		disabled
 		style={`
       -webkit-mask-image: radial-gradient(30% 30px at ${position.x}px ${position.y}px, black 45%, transparent);

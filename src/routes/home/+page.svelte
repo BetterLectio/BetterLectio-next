@@ -274,7 +274,7 @@
 						{#each news as item, i}
 							<SvelteMarkdown source={item.description} renderers={{ link: NewTabLink }} />
 							{#if i != news.length - 1}
-								<hr class="!my-4 dark:border-t-gray-600/50" />
+								<hr class="!my-4 dark:border-t-zinc-600/50" />
 							{/if}
 						{/each}
 					</div>
