@@ -5,8 +5,9 @@
 	import { ChevronsUpDown, Loader2, LocateIcon, X } from 'lucide-svelte';
 	import { FancyInput } from '../fancyinput';
 	import { Button } from '../button';
-	import type { ClosestSchool } from '$lib/types/location';
+	import type { ClosestSchool } from '../../../../../../BetterLectio-OAuth-helper/src/lib/types/location';
 	import { toast } from 'svelte-sonner';
+	import { LECTIO_OAUTH_API } from '$lib/lectio';
 
 	const {
 		elements: { close, content, overlay, portalled, title, trigger },
@@ -29,8 +30,12 @@
 		locating = true;
 		navigator.geolocation.getCurrentPosition(
 			async (position) => {
-				const resp = await fetch(`/api/locate?lat=${position.coords.latitude}&lng=${position.coords.longitude}`);
-				if (!resp.ok) return toast.error("Kunne ikke finde nærmeste skole.")
+				const resp = await fetch(`${LECTIO_OAUTH_API}/locate?lat=${position.coords.latitude}&lng=${position.coords.longitude}`);
+				if (!resp.ok) {
+					toast.error("Kunne ikke finde nærmeste skole.")
+					locating = false;
+					return;
+				}
 
 				const data = (await resp.json()) as ClosestSchool;
 				value = data.id;

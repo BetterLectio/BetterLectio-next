@@ -5,7 +5,6 @@
 	import { Label } from '$lib/components/ui/label';
 	import { SchoolSelect } from '$lib/components/ui/schoolselect';
 	import { authStore } from '$lib/stores';
-	import School from 'lucide-svelte/icons/school';
 	import { onMount } from 'svelte';
 	import { toast } from 'svelte-sonner';
 	import { LECTIO_API } from '$lib/lectio';
