@@ -36,7 +36,11 @@ export const scheduleStore = localStore<{ moduler: RawLesson; overskrift: string
 	'schedule',
 	null
 );
-export const assignmentStore = lectioDataStore<RawSimpleAssignment[] | null>('/opgaver', 'assignments', null);
+export const assignmentStore = lectioDataStore<RawSimpleAssignment[] | null>(
+	'/opgaver',
+	'assignments',
+	null
+);
 export const messageStore = localStore<Message[] | null>('messages', null);
 export const frontPageStore = localStore<{
 	lessons: Lesson[];
@@ -72,3 +76,4 @@ export const fetchInformation = async () => {
 	});
 };
 
+export const connectionStore = writable<boolean>(true);
