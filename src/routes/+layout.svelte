@@ -53,7 +53,6 @@
 
 			//check if cookie is valid
 			if ($authStore.cookie === null) {
-
 				throw new Error('Cookie is invalid');
 			}
 		}
@@ -94,6 +93,11 @@
 		$page.url.pathname === '/' || $page.url.pathname === '/home'
 			? 'BetterLectio'
 			: toTitleCase(decodeURIComponent($page.url.pathname.replace('/', ''))) + ' - BetterLectio';
+
+	async function routeChange(route: string) {
+		checkCookie(); // not async on purpose
+		console.log('Route changed to', route);
+	}
 </script>
 
 <svelte:head>
@@ -108,7 +112,7 @@
 <SiteSearch />
 <SiteNavigation>
 	{#if hasCredentials}
-		{#await checkCookie()}
+		{#await routeChange($page.url.pathname)}
 			<div class="flex items-center justify-center h-full">
 				<Spinner />
 			</div>
