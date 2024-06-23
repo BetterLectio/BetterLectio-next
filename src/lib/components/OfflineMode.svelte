@@ -4,8 +4,11 @@
 	import CircleAlert from 'lucide-svelte/icons/circle-alert';
 	import { onMount } from 'svelte';
 	import { fly } from 'svelte/transition';
+	import { isDesktop } from '$lib/utils/environment';
 
 	onMount(() => {
+		if (!isDesktop) return; // Only works on desktop, mobile devices use the `get()` logic in http.ts
+
 		connectionStore.set(window.navigator.onLine);
 
 		const offlineEventListener = () => {
