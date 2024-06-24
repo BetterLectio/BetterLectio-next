@@ -5,7 +5,7 @@
 	import { Button } from '$lib/components/ui/button';
 	import { authStore } from '$lib/stores';
 	import type { RawLesson } from '$lib/types/lesson';
-	import { constructInterval, decodeUserID, stringToColor } from '$lib/utils/other';
+	import { constructInterval, decodeUserID, NAME_REGEX, stringToColor } from '$lib/utils/other';
 	import { get } from '$lib/utils/http';
 	import { Calendar, type EventSourceFunc } from '@fullcalendar/core';
 	import daLocale from '@fullcalendar/core/locales/da';
@@ -20,8 +20,6 @@
 	import 'tippy.js/animations/shift-away.css';
 	import { isMediumScreen } from '$lib/utils';
 
-	const nameRegex = /^(?:[\w]+) (.*)(?:,.*)/;
-
 	let userId: string;
 	let searchId: string;
 	let userName = '';
@@ -31,7 +29,7 @@
 		get(`/skema?id=${userId}&uge=${start.weekNumber}&år=${start.year}`).then(
 			(data: { moduler: RawLesson[]; overskrift: string }) => {
 				if (userId.startsWith('S')) {
-					const matches = nameRegex.exec(data.overskrift);
+					const matches = NAME_REGEX.exec(data.overskrift);
 					if (matches) {
 						userName = matches[1];
 					} else {

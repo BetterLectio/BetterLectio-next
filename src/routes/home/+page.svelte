@@ -16,9 +16,12 @@
 	import { DateTime, Interval } from 'luxon';
 	import { onMount } from 'svelte';
 	import SvelteMarkdown from 'svelte-markdown';
+	import { NAME_REGEX } from '$lib/utils/other';
 
+	let userName = '';
 	onMount(async () => {
 		const data = (await get('/forside')) as {
+			overskrift: string;
 			skema: RawLesson[];
 			aktuelt: RawNews[];
 			undervisning: { opgaveaflevering?: { id: string; dato: string; navn: string }[] };
@@ -26,6 +29,13 @@
 				beskeder: RawSimpleMessage[];
 			};
 		};
+
+		const matches = NAME_REGEX.exec(data.overskrift);
+		if (matches) {
+			userName = matches[1];
+		} else {
+			userName = data.overskrift;
+		}
 
 		$frontPageStore = {
 			lessons: data.skema.map((lesson) => {
@@ -72,46 +82,46 @@
 	$: nextClass =
 		$frontPageStore && $frontPageStore.lessons && $frontPageStore.lessons.length > 0
 			? {
-					...$frontPageStore.lessons[0],
-					interval: constructInterval($frontPageStore.lessons[0].date)
-				}
+				...$frontPageStore.lessons[0],
+				interval: constructInterval($frontPageStore.lessons[0].date)
+			}
 			: null;
 	$: nextClassLoading = !$frontPageStore || !$frontPageStore.lessons;
 	$: classes = $frontPageStore
 		? ($frontPageStore?.lessons ?? []).reduce<
-				{ name: string; lessons: (Lesson & { interval: Interval })[] }[]
-			>((acc, lesson) => {
-				const interval = constructInterval(lesson.date);
-				const dayName = interval.start?.hasSame(DateTime.now(), 'day')
-					? 'I dag'
-					: interval.start?.hasSame(DateTime.now().plus({ days: 1 }), 'day')
-						? 'I morgen'
-						: toTitleCase(interval.start?.toFormat('EEEE d/M') ?? 'N/A');
-				if (acc.find((day) => day.name === dayName))
-					acc[acc.findIndex((day) => day.name === dayName)].lessons.push({ ...lesson, interval });
-				else acc.push({ name: dayName, lessons: [{ ...lesson, interval }] });
-				return acc;
-			}, [])
+			{ name: string; lessons: (Lesson & { interval: Interval })[] }[]
+		>((acc, lesson) => {
+			const interval = constructInterval(lesson.date);
+			const dayName = interval.start?.hasSame(DateTime.now(), 'day')
+				? 'I dag'
+				: interval.start?.hasSame(DateTime.now().plus({ days: 1 }), 'day')
+					? 'I morgen'
+					: toTitleCase(interval.start?.toFormat('EEEE d/M') ?? 'N/A');
+			if (acc.find((day) => day.name === dayName))
+				acc[acc.findIndex((day) => day.name === dayName)].lessons.push({ ...lesson, interval });
+			else acc.push({ name: dayName, lessons: [{ ...lesson, interval }] });
+			return acc;
+		}, [])
 		: null;
 	$: assignments = $frontPageStore
 		? ($frontPageStore?.assignments ?? []).map((assignment) => {
-				return {
-					...assignment,
-					date: DateTime.fromFormat(assignment.date, 'd/M-yyyy HH:mm', {
-						locale: 'da'
-					})
-				};
-			})
+			return {
+				...assignment,
+				date: DateTime.fromFormat(assignment.date, 'd/M-yyyy HH:mm', {
+					locale: 'da'
+				})
+			};
+		})
 		: null;
 	$: messages = $frontPageStore
 		? ($frontPageStore?.messages ?? []).map((message) => {
-				return {
-					...message,
-					date: DateTime.fromFormat(message.date, 'd/M-yyyy HH:mm', {
-						locale: 'da'
-					})
-				};
-			})
+			return {
+				...message,
+				date: DateTime.fromFormat(message.date, 'd/M-yyyy HH:mm', {
+					locale: 'da'
+				})
+			};
+		})
 		: null;
 	$: news = $frontPageStore ? $frontPageStore?.news ?? [] : null;
 </script>
@@ -217,7 +227,7 @@
 										<div class="flex items-center flex-1 h-full min-w-0">
 											<div class="flex justify-center shrink-0 w-11">
 												<span class="text-lg font-medium"
-													>{lesson.interval.start?.toFormat('HH:mm')}</span
+												>{lesson.interval.start?.toFormat('HH:mm')}</span
 												>
 											</div>
 											<Separator orientation="vertical" class="h-10 mx-3" />
@@ -250,8 +260,11 @@
 												{/if}
 											</div>
 										</div>
-										<Button href={`/modul?absid=${lesson.id}`} variant="ghost" size="sm">
-											Vis <ArrowRight class="ml-1 size-4" />
+										<Button
+											href={lesson.id.startsWith("PH") ? `/eksamen?id=${lesson.id.substring(2)}&navn=${userName}` : `/modul?absid=${lesson.id}`}
+											variant="ghost" size="sm">
+											Vis
+											<ArrowRight class="ml-1 size-4" />
 										</Button>
 									</Card>
 								{/each}
