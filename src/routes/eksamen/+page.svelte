@@ -26,9 +26,22 @@
 		exam = await get(`/eksamen?id=${id}`);
 
 		if (exam) {
-			$participants = exam?.participants;
+			const parts: Participant[] = [];
+			exam.participants.forEach(p => {
+				parts.push({
+					navn: p.navn,
+					elev_id: p.elev_id,
+					eks_dato: p.eks_dato,
+					forb: p.forb,
+					eks_start: p.eks_start,
+					eks_slut: p.eks_slut,
+					klasse: p.klasse
+				});
+			});
+			exam.participants = parts;
+			$participants = parts;
 			if (name)
-				participant = exam?.participants.find(p => p.navn === name);
+				participant = parts.find(p => p.navn === name);
 		}
 	});
 
@@ -49,7 +62,7 @@
 	]);
 	const { headerRows, pageRows, tableAttrs, tableBodyAttrs, pluginStates } =
 		table.createViewModel(columns);
-	const {sortKeys} = pluginStates.sort;
+	const { sortKeys } = pluginStates.sort;
 </script>
 
 <div class="page-container">
