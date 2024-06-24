@@ -70,7 +70,7 @@
 						id: lesson.absid,
 						start,
 						title: `${lesson.navn ?? className}${lesson.lokale ? ` • ${lesson.lokale}` : ''}`,
-						url: `/modul?absid=${lesson.absid}`
+						url: lesson.absid.startsWith('PH') ? `/eksamen?id=${lesson.absid.substring(2)}&navn=${userName}` : `/modul?absid=${lesson.absid}`
 					};
 				});
 				successCallback(events);
@@ -111,7 +111,7 @@
 			// @ts-ignore
 			allDaySlot: false,
 			contentHeight: 'auto',
-			dayHeaderContent: function (renderProps) {
+			dayHeaderContent: function(renderProps) {
 				const date = DateTime.fromJSDate(renderProps.date).setLocale('da');
 				const todayClasses = renderProps.isToday
 					? 'w-8 h-8 rounded-full bg-primary text-white dark:text-black'
@@ -165,7 +165,7 @@
 			},
 			titleFormat: 'Uge W, yyyy',
 			weekends: false,
-			windowResize: function () {
+			windowResize: function() {
 				calendar.changeView($isMediumScreen ? 'timeGridWeek' : 'timeGridDay');
 			}
 		});
@@ -232,7 +232,8 @@
 						calendar.changeView('timeGridWeek');
 						showBackToWeekViewButton = false;
 					}}
-					variant="outline">Ugevisning</Button
+					variant="outline">Ugevisning
+				</Button
 				>
 			{/if}
 		</div>
