@@ -12,7 +12,7 @@
 	import ArrowRight from 'lucide-svelte/icons/arrow-right';
 	import Clock from 'lucide-svelte/icons/clock';
 	import DoorOpen from 'lucide-svelte/icons/door-open';
-	import Plus from 'lucide-svelte/icons/plus';
+	import { goto } from '$app/navigation';
 	import { DateTime, Interval } from 'luxon';
 	import { onMount } from 'svelte';
 	import SvelteMarkdown from 'svelte-markdown';
@@ -223,14 +223,16 @@
 							{#each classes as day}
 								<h3 class="text-sm font-medium leading-7 unstyled">{day.name}</h3>
 								{#each day.lessons as lesson}
-									<Card level="2" class="flex items-center p-3" error={lesson.status === 'aflyst'}>
-										<div class="flex items-center flex-1 h-full min-w-0">
-											<div class="flex justify-center shrink-0 w-11">
+									{@const url = lesson.id.startsWith("PH") ? `/eksamen?id=${lesson.id.substring(2)}&navn=${userName}` : `/modul?absid=${lesson.id}`}
+									<Card level="2" class="flex items-center p-3" error={lesson.status === 'aflyst'} on:click={goto(url)}>
+										<div
+											class="flex items-stretch sm:items-center max-sm:flex-col-reverse max-sm:content-start flex-1 h-full min-w-0">
+											<div class="max-sm:hidden flex justify-center shrink-0 w-11">
 												<span class="text-lg font-medium"
 												>{lesson.interval.start?.toFormat('HH:mm')}</span
 												>
 											</div>
-											<Separator orientation="vertical" class="h-10 mx-3" />
+											<Separator orientation="vertical" class="max-sm:hidden h-10 mx-3" />
 											<div class="flex flex-col w-32 shrink-0">
 												<div class="flex items-center">
 													<Clock class="mr-1 size-4" />
@@ -245,6 +247,7 @@
 													{/if}
 												</div>
 											</div>
+											<Separator class="my-4 sm:hidden" />
 											<div class="flex flex-col min-w-0">
 												<p class="overflow-hidden text-sm overflow-ellipsis whitespace-nowrap">
 													{lesson.name ?? lesson.class}
@@ -261,8 +264,8 @@
 											</div>
 										</div>
 										<Button
-											href={lesson.id.startsWith("PH") ? `/eksamen?id=${lesson.id.substring(2)}&navn=${userName}` : `/modul?absid=${lesson.id}`}
-											variant="ghost" size="sm">
+											href={url}
+											variant="ghost" size="sm" class="max-sm:hidden">
 											Vis
 											<ArrowRight class="ml-1 size-4" />
 										</Button>
