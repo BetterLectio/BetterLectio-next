@@ -36,8 +36,6 @@
 	let pageRefresher = 0; // Used to refresh page when cookie is updated after is has been invalidated by lectio
 
 	$: if ($connectionStore) {
-		// only works because it's a bool
-		console.log('device came online, refetching page content');
 		pageRefresher++;
 	}
 
