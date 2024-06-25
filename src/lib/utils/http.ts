@@ -54,7 +54,7 @@ async function http(endpoint: string, body: any = null): Promise<any | false> {
 
 		return false;
 	} catch (error) {
-		if (error instanceof TypeError && error.message === 'Failed to fetch') {
+		if (error instanceof TypeError && error.message === 'NetworkError when attempting to fetch resource.') {
 			connectionStore.set(false);
 		} else {
 			connectionStore.set(true);
