@@ -5,15 +5,14 @@
 	import { MessageLink } from '$lib/components/links';
 	import { Badge } from '$lib/components/ui/badge';
 	import { Button } from '$lib/components/ui/button';
-	import { Footer } from '$lib/components/ui/dialog';
 	import { Input } from '$lib/components/ui/input';
 	import { ValueSelect } from '$lib/components/ui/select';
 	import Separator from '$lib/components/ui/separator/separator.svelte';
 	import { Skeleton } from '$lib/components/ui/skeleton';
 	import { TextTooltip } from '$lib/components/ui/tooltip';
 	import { LECTIO_API } from '$lib/lectio';
-	import { authStore, fetchInformation, informationStore, messageStore } from '$lib/stores';
-	import type { FullMessage, RawFullMessage, RawMessage } from '$lib/types/messages';
+	import { authStore, informationStore, messageStore } from '$lib/stores';
+	import type { FullMessage, RawFullMessage } from '$lib/types/messages';
 	import { decodeUserID, get, relativeTime } from '$lib/utils';
 	import { createCollapsible, melt } from '@melt-ui/svelte';
 	import { test } from 'fuzzy';
@@ -27,7 +26,7 @@
 	import Send from 'lucide-svelte/icons/send';
 	import Undo from 'lucide-svelte/icons/undo';
 	import { DateTime } from 'luxon';
-	import { onDestroy, onMount } from 'svelte';
+	import { onMount } from 'svelte';
 	import SvelteMarkdown from 'svelte-markdown';
 	import { toast } from 'svelte-sonner';
 	import { fade, fly, slide } from 'svelte/transition';
@@ -36,6 +35,7 @@
 	$: if (selectedMessage) {
 		fetchFullMessage();
 	}
+
 	onMount(async () => {
 		const params = $page.url.searchParams;
 		const messageId = params.get('id');
@@ -43,25 +43,16 @@
 			selectedMessage = messageId;
 		}
 
-		const res = (await get('/beskeder2')) as RawMessage[];
-		$messageStore = res.map((message) => {
-			return {
-				date: message.dato,
-				id: message.message_id,
-				receivers: message.modtagere,
-				sender: message.førsteBesked.split(' (')[0].split(' -')[0],
-				title: message.emne
-			};
-		});
-
-		await fetchInformation();
+		await messageStore.fetch();
+		await informationStore.fetch();
 	});
+
 	$: messages = $messageStore
 		? $messageStore.length >= 0 && $messageStore.length > 0 && $messageStore?.[0]?.date // Remove this after some time. Fixes old localStorage message format
 			? $messageStore.map((message) => ({
-					...message,
-					date: DateTime.fromFormat(message.date, 'd/M-yyyy HH:mm', { locale: 'da' })
-				}))
+				...message,
+				date: DateTime.fromFormat(message.date, 'd/M-yyyy HH:mm', { locale: 'da' })
+			}))
 			: null
 		: null;
 	$: me = $informationStore?.students?.find(
@@ -82,21 +73,21 @@
 		searchGroup != '';
 	$: filteredMessages = messages
 		? messages.filter((message) => {
-				if (searchFilter != 'All') {
-					if (message.sender == me?.name && searchFilter == 'Received') return false;
-					if (message.sender != me?.name && searchFilter == 'Sent') return false;
-				}
-				if (searchGroup) {
-					if (!message.receivers.includes(searchGroup)) return false;
-				}
-				if (searchFrom) {
-					if (DateTime.fromISO(searchFrom).plus({ hours: 2 }) > message.date) return false;
-				}
-				if (searchTo) {
-					if (DateTime.fromISO(searchTo).plus({ hours: 2 }) < message.date) return false;
-				}
-				return test(searchTerm, message.title);
-			})
+			if (searchFilter != 'All') {
+				if (message.sender == me?.name && searchFilter == 'Received') return false;
+				if (message.sender != me?.name && searchFilter == 'Sent') return false;
+			}
+			if (searchGroup) {
+				if (!message.receivers.includes(searchGroup)) return false;
+			}
+			if (searchFrom) {
+				if (DateTime.fromISO(searchFrom).plus({ hours: 2 }) > message.date) return false;
+			}
+			if (searchTo) {
+				if (DateTime.fromISO(searchTo).plus({ hours: 2 }) < message.date) return false;
+			}
+			return test(searchTerm, message.title);
+		})
 		: [];
 
 	let fullMessage: FullMessage | null = null;
@@ -122,19 +113,19 @@
 				);
 				const client = clientParts
 					? {
-							name: clientParts[1] ?? clientParts[3],
-							link: clientParts[2] ?? clientParts[4]
-						}
+						name: clientParts[1] ?? clientParts[3],
+						link: clientParts[2] ?? clientParts[4]
+					}
 					: undefined;
 
 				return {
 					attachments: message.vedhæftninger
 						? message.vedhæftninger.map((attachment) => {
-								return {
-									link: attachment.href,
-									name: attachment.navn
-								};
-							})
+							return {
+								link: attachment.href,
+								name: attachment.navn
+							};
+						})
 						: [],
 					date: DateTime.fromFormat(message.dato, 'dd-MM-yyyy HH:mm:ss', {
 						locale: 'da'
@@ -188,6 +179,7 @@
 		replyTo = null;
 		replyContent = '';
 	};
+
 	const onWindowKeydown = (event: KeyboardEvent) => {
 		if (event.key == 'Escape') {
 			if (replyTo) {
@@ -225,6 +217,7 @@
 			}
 		}
 	};
+
 	const addIfMissing = (element: Element, className: string | string[]) => {
 		if (Array.isArray(className)) {
 			className.forEach((name) => {
@@ -238,6 +231,7 @@
 			}
 		}
 	};
+
 	let sidebar: HTMLDivElement;
 	$: if (container && sidebar) {
 		if (selectedMessage) {
@@ -252,6 +246,7 @@
 	}
 
 	let width = 0;
+
 	function flyOrFade(node: Element) {
 		return width > 1024 ? fly(node, { duration: 200, x: '100vw' }) : fade(node, { duration: 100 });
 	}
@@ -263,17 +258,15 @@
 
 	//make a thing that runs every 0.5 seconds
 	let interval: number | undefined;
-
 	onMount(() => {
 		calcInputFieldWidth();
 		interval = setInterval(() => {
 			calcInputFieldWidth();
 		}, 100);
-	});
 
-	onDestroy(() => {
-		console.log('the component is being destroyed');
-		clearInterval(interval);
+		() => {
+			clearInterval(interval);
+		};
 	});
 
 	function calcInputFieldWidth() {
@@ -343,21 +336,24 @@
 									searchFilter = 'All';
 								}}
 								variant={searchFilter == 'All' ? 'default' : 'outline'}
-								class="cursor-pointer">Alle</Badge
+								class="cursor-pointer">Alle
+							</Badge
 							>
 							<Badge
 								on:click={() => {
 									searchFilter = 'Received';
 								}}
 								variant={searchFilter == 'Received' ? 'default' : 'outline'}
-								class="cursor-pointer">Modtaget</Badge
+								class="cursor-pointer">Modtaget
+							</Badge
 							>
 							<Badge
 								on:click={() => {
 									searchFilter = 'Sent';
 								}}
 								variant={searchFilter == 'Sent' ? 'default' : 'outline'}
-								class="cursor-pointer">Sendt</Badge
+								class="cursor-pointer">Sendt
+							</Badge
 							>
 						</div>
 						{#key $informationStore}
@@ -514,7 +510,7 @@
 						<div class="flex items-center flex-1 min-w-0">
 							<div class="flex flex-col min-w-0 ml-3">
 								<span class="font-semibold leading-5 line-clamp-1"
-									>{fullMessage.messages[0].title}</span
+								>{fullMessage.messages[0].title}</span
 								>
 								<TextTooltip text={fullMessage.receivers} class="text-xs text-gray-400 truncate">
 									{fullMessage.receivers}
@@ -586,7 +582,7 @@
 											{#if message.client}
 												<div class="flex items-center text-gray-400">
 													<a target="_blank" href={message.client.link} class="text-sm"
-														>Sendt fra {message.client.name}</a
+													>Sendt fra {message.client.name}</a
 													>
 													<ExternalLink class="ml-1 size-4" />
 												</div>
@@ -648,7 +644,7 @@
 											{#if message.client}
 												<div class="flex items-center text-gray-400">
 													<a target="_blank" href={message.client.link} class="text-sm"
-														>Sendt fra {message.client.name}</a
+													>Sendt fra {message.client.name}</a
 													>
 													<ExternalLink class="ml-1 size-4" />
 												</div>

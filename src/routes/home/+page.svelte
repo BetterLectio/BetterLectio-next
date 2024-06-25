@@ -5,10 +5,8 @@
 	import { Card } from '$lib/components/ui/card';
 	import { Separator } from '$lib/components/ui/separator';
 	import { frontPageStore } from '$lib/stores';
-	import type { Lesson, RawLesson } from '$lib/types/lesson';
-	import type { RawSimpleMessage } from '$lib/types/messages';
-	import type { RawNews } from '$lib/types/news';
-	import { constructInterval, get, relativeTime, stringToColor, toTitleCase } from '$lib/utils';
+	import type { Lesson } from '$lib/types/lesson';
+	import { constructInterval, isSmallScreen, relativeTime, toTitleCase } from '$lib/utils';
 	import ArrowRight from 'lucide-svelte/icons/arrow-right';
 	import Clock from 'lucide-svelte/icons/clock';
 	import DoorOpen from 'lucide-svelte/icons/door-open';
@@ -16,67 +14,9 @@
 	import { DateTime, Interval } from 'luxon';
 	import { onMount } from 'svelte';
 	import SvelteMarkdown from 'svelte-markdown';
-	import { NAME_REGEX } from '$lib/utils/other';
 
-	let userName = '';
 	onMount(async () => {
-		const data = (await get('/forside')) as {
-			overskrift: string;
-			skema: RawLesson[];
-			aktuelt: RawNews[];
-			undervisning: { opgaveaflevering?: { id: string; dato: string; navn: string }[] };
-			kommunikation: {
-				beskeder: RawSimpleMessage[];
-			};
-		};
-
-		const matches = NAME_REGEX.exec(data.overskrift);
-		if (matches) {
-			userName = matches[1];
-		} else {
-			userName = data.overskrift;
-		}
-
-		$frontPageStore = {
-			lessons: data.skema.map((lesson) => {
-				return {
-					color: stringToColor(lesson.hold ?? '', 100, 90).string,
-					class: lesson.hold ?? '',
-					id: lesson.absid,
-					date: lesson.tidspunkt,
-					name:
-						lesson.navn
-							?.replace('prv.', 'prøve')
-							.replace('mdt.', 'mundtlig')
-							.replace('skr.', 'skriftlig') ?? '',
-					note: lesson.andet ?? '',
-					room: lesson.lokale ?? '',
-					status: lesson.status ?? '',
-					teacher: lesson.lærer ?? ''
-				};
-			}),
-			assignments:
-				data.undervisning?.opgaveaflevering?.map((assignment) => {
-					return {
-						id: +assignment.id,
-						name: assignment.navn,
-						date: assignment.dato
-					};
-				}) ?? [],
-			messages: data.kommunikation.beskeder.map((message) => {
-				return {
-					date: message.dato,
-					id: +message.id,
-					sender: message.afsender,
-					title: message.navn
-				};
-			}),
-			news: data.aktuelt.map((item) => {
-				return {
-					description: item.text.replaceAll('@', '@<!-- -->') // Without this, emails get obfuscated with random hex characters. https://github.com/github/markup/issues/1168
-				};
-			})
-		};
+		await frontPageStore.fetch();
 	});
 
 	$: nextClass =
@@ -209,7 +149,7 @@
 				{/if}
 			</Card>
 		</div>
-		<div class="flex flex-col gap-4">
+		<div class="flex flex-col gap-4 w-full">
 			<Card class="p-2 border-2 lg:max-h-[50vh] overflow-auto">
 				<div class="flex items-center justify-between">
 					<h2 class="text-lg font-medium unstyled">Skema</h2>
@@ -223,8 +163,9 @@
 							{#each classes as day}
 								<h3 class="text-sm font-medium leading-7 unstyled">{day.name}</h3>
 								{#each day.lessons as lesson}
-									{@const url = lesson.id.startsWith("PH") ? `/eksamen?id=${lesson.id.substring(2)}&navn=${userName}` : `/modul?absid=${lesson.id}`}
-									<Card level="2" class="flex items-center p-3" error={lesson.status === 'aflyst'} on:click={goto(url)}>
+									{@const url = lesson.id.startsWith("PH") ? `/eksamen?id=${lesson.id.substring(2)}&navn=${$frontPageStore?.name}` : `/modul?absid=${lesson.id}`}
+									<Card level="2" class="flex items-center p-3" error={lesson.status === 'aflyst'}
+												on:click={() => !$isSmallScreen && goto(url)}>
 										<div
 											class="flex items-stretch sm:items-center max-sm:flex-col-reverse max-sm:content-start flex-1 h-full min-w-0">
 											<div class="max-sm:hidden flex justify-center shrink-0 w-11">
@@ -295,7 +236,7 @@
 						{/each}
 					</div>
 				{:else}
-					<p>Ingen aktuelle nyheder.</p>
+					<p class="text-sm text-muted-foreground">Ingen aktuelle nyheder.</p>
 				{/if}
 			</Card>
 		</div>

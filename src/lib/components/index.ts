@@ -10,3 +10,4 @@ export { default as Spinner } from './Spinner.svelte';
 export { default as WelcomePage } from './WelcomePage.svelte';
 export { default as ScreenSize } from './ScreenSize.svelte';
 export { default as DrawerFix } from './DrawerFix.svelte';
+export { default as OfflineMode } from './OfflineMode.svelte';

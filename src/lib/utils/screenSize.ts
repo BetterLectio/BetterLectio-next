@@ -1,5 +1,7 @@
-import { derived } from 'svelte/store';
-import { screenSizeStore } from '$lib/stores';
+import { derived, writable } from 'svelte/store';
+
+// must be defined here to avoid circular dependencies
+export const screenSizeStore = writable({ width: window.innerWidth, height: window.innerHeight });
 
 export const isSmallScreen = derived(screenSizeStore, $screenSize => $screenSize.width >= 640);
 export const isMediumScreen = derived(screenSizeStore, $screenSize => $screenSize.width >= 768);

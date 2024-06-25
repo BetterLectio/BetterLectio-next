@@ -11,7 +11,8 @@
 		Spinner,
 		WelcomePage,
 		ScreenSize,
-		DrawerFix
+		DrawerFix,
+		OfflineMode
 	} from '$lib/components';
 	import { Toaster } from '$lib/components/ui/sonner';
 	import { authStore, connectionStore } from '$lib/stores';
@@ -26,7 +27,6 @@
 	import { ModeWatcher } from 'mode-watcher';
 	import { page } from '$app/stores';
 	import { toTitleCase } from '$lib/utils/string';
-	import OfflineMode from '$lib/components/OfflineMode.svelte';
 
 	Settings.defaultLocale = 'da';
 
