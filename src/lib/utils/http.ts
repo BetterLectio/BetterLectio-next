@@ -7,7 +7,7 @@ export function reloadData(reload = true) {
 	if (reload) window.location.reload();
 }
 
-async function simpleGet(endpoint: string, body: any = null): Promise<any | false> {
+async function http(endpoint: string, body: any = null): Promise<any | false> {
 	try {
 		loadingStore.set(true);
 		/* setTimeout(() => { //maybe not needed
@@ -29,10 +29,12 @@ async function simpleGet(endpoint: string, body: any = null): Promise<any | fals
 			body === null
 				? await fetch(url, { headers })
 				: await fetch(url, {
-						method: 'POST',
-						headers: { ...headers, 'Content-Type': 'application/json' },
-						body
-					});
+					method: 'POST',
+					headers: { ...headers, 'Content-Type': 'application/json' },
+					body
+				});
+
+		connectionStore.set(true);
 		loadingStore.set(false);
 
 		const data = await response.json();
@@ -52,55 +54,40 @@ async function simpleGet(endpoint: string, body: any = null): Promise<any | fals
 
 		return false;
 	} catch (error) {
+		if (error instanceof TypeError && error.message === 'Failed to fetch') {
+			connectionStore.set(false);
+		} else {
+			connectionStore.set(true);
+			console.error(error);
+		}
 		loadingStore.set(false);
 		return false;
 	}
 }
 
 export async function get(endpoint: string, body: any = null): Promise<any | false> {
-	let resp = await simpleGet(endpoint, body);
-	if (resp !== false) {
-		connectionStore.set(true);
+	let resp = await http(endpoint, body);
+	if (resp) {
 		return resp;
-	} else {
-		console.log(await checkCookie());
-		if (await checkCookie()) {
-			return false; // internet is connected but api request fail for some reason
-		} else {
-			let tries = 0;
-			const maxTries = 100; // Set the maximum number of tries set high on purpose
-			while (tries < maxTries) {
-				// retry until internet is connected
-				console.log('[http] retrying request');
-				if (await checkCookie()) {
-					connectionStore.set(true);
-					return await simpleGet(endpoint, body);
-				} else {
-					connectionStore.set(false);
-					tries++;
-					await new Promise((r) => setTimeout(r, 1000)); // wait for 1 second
-				}
+	}
+
+	if (!storeGet(connectionStore)) {
+		let tries = 0;
+		const maxTries = 100; // Set the maximum number of tries set high on purpose
+		while (tries < maxTries) {
+			// retry until internet is connected
+			console.info('[http] retrying request');
+			resp = await http(endpoint, body);
+			if (resp) {
+				return resp;
+			} else if (storeGet(connectionStore)) {
+				return false; // internet is connected, but the request still failed
 			}
-			return false; // internet is not connected and maxTries is reached, so let page deal with it
+
+			tries++;
+			await new Promise((r) => setTimeout(r, 1000)); // wait for 1 second
 		}
-	}
-}
 
-async function checkCookie() {
-	try {
-		let res = await fetch(`${LECTIO_API}/check-cookie`, {
-			headers: {
-				'lectio-cookie': storeGet(authStore).cookie || ''
-			}
-		});
-		let data = await res.json();
-		return data.valid;
-	} catch (error) {
-		return false;
+		return false; // internet is not connected and maxTries is reached, so let page deal with it
 	}
-}
-
-export async function post(endpoint: string, body: Object) {
-	const response = await get(endpoint, body);
-	return response;
 }
