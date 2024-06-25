@@ -55,7 +55,6 @@
 	const columns = table.createColumns([
 		table.column({ accessor: 'elev_id', header: 'ID' }),
 		table.column({ accessor: 'navn', header: 'Navn' }),
-		table.column({ accessor: 'klasse', header: 'Klasse' }),
 		table.column({ accessor: 'eks_dato', header: 'Dato' }),
 		table.column({ accessor: 'forb', header: 'Forb' }),
 		table.column({ accessor: 'eks_start', header: 'Start' }),
