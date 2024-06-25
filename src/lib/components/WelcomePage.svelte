@@ -54,6 +54,7 @@
 			}));
 
 			loading = false;
+			return;
 		}
 
 		username = '';
