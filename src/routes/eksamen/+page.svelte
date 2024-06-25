@@ -57,6 +57,7 @@
 		table.column({ accessor: 'navn', header: 'Navn' }),
 		table.column({ accessor: 'klasse', header: 'Klasse' }),
 		table.column({ accessor: 'eks_dato', header: 'Dato' }),
+		table.column({ accessor: 'forb', header: 'Forb' }),
 		table.column({ accessor: 'eks_start', header: 'Start' }),
 		table.column({ accessor: 'eks_slut', header: 'Slut' })
 	]);
@@ -66,7 +67,7 @@
 </script>
 
 <div class="page-container">
-	<div class="flex justify-between">
+	<div class="lg:flex lg:justify-between">
 		{#if exam}
 			<h1>{exam.info.prøvehold} - {exam.info.prøvetype}</h1>
 		{:else}
