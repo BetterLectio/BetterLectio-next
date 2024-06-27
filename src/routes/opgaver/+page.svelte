@@ -1,4 +1,3 @@
-
 <script lang="ts">
 	import { goto } from '$app/navigation';
 	import { Spinner } from '$lib/components';
@@ -21,6 +20,8 @@
 	import Rocket from 'svelte-radix/Rocket.svelte';
 
 	let opgaver = $assignmentStore;
+	let filteredOpgaver: RawSimpleAssignment[] = [];
+	$: if (opgaver) filteredOpgaver = opgaver;
 	let searchString = '';
 	let status = 'Skal Afleveres';
 
@@ -30,7 +31,7 @@
 	});
 
 	$: if ($assignmentStore) {
-		opgaver = $assignmentStore?.filter((opgave) => {
+		filteredOpgaver = $assignmentStore?.filter((opgave) => {
 			switch (status) {
 				case 'Alle':
 					return true;
@@ -44,6 +45,8 @@
 	}
 
 	function search() {
+		if (!searchString) return;
+		status = 'Alle';
 		const searchResults: RawSimpleAssignment[] = [];
 		opgaver?.forEach((opgave) => {
 			if (
@@ -51,8 +54,8 @@
 				opgave.hold.includes(searchString.toLowerCase())
 			)
 				searchResults.push(opgave);
+			filteredOpgaver = searchResults;
 		});
-		opgaver = searchResults;
 	}
 
 	function elevtidNum(elevtid: string) {
@@ -69,11 +72,13 @@
 			{/if}
 		</div>
 		<div class="flex flex-col items-center w-full gap-2 lg:w-fit sm:flex-row">
-			<ValueSelect
-				class=""
-				bind:value={status}
-				items={['Alle', 'Skal Afleveres', 'Er Afleveret']}
-			/>
+			{#key status}
+				<ValueSelect
+					class=""
+					bind:value={status}
+					items={['Alle', 'Skal Afleveres', 'Er Afleveret']}
+				/>
+			{/key}
 			<Input
 				type="text"
 				class="w-full h-10 lg:w-fit"
@@ -96,8 +101,8 @@
 			</Table.Row>
 		</Table.Header>
 		<Table.Body>
-			{#if opgaver}
-				{#each opgaver as opgave}
+			{#if filteredOpgaver}
+				{#each filteredOpgaver as opgave}
 					<Table.Row
 						on:click={async () => await goto(`/opgave?id=${opgave.exerciseid}`)}
 						class="cursor-pointer select-none"
@@ -106,22 +111,16 @@
 						<div class="flex items-center ml-2 h-9">
 							<Tooltip.Root>
 								{#if opgave.status === 'Afleveret'}
-									<Tooltip.Trigger
-									>
-										<Rocket
-											class="w-4 h-4 text-green-800 dark:text-green-400"
-										/>
-									</Tooltip.Trigger
-									>
+									<Tooltip.Trigger>
+										<Rocket class="w-4 h-4 text-green-800 dark:text-green-400" />
+									</Tooltip.Trigger>
 									<Tooltip.Content>
 										<p>Afleveret</p>
 									</Tooltip.Content>
 								{:else if opgave.status === 'Afsluttet'}
-									<Tooltip.Trigger
-									>
+									<Tooltip.Trigger>
 										<Archive class="w-4 h-4 text-blue-800 dark:text-blue-400" />
-									</Tooltip.Trigger
-									>
+									</Tooltip.Trigger>
 									<Tooltip.Content>
 										<p>Afsluttet</p>
 									</Tooltip.Content>
@@ -133,13 +132,9 @@
 										<p>Venter</p>
 									</Tooltip.Content>
 								{:else}
-									<Tooltip.Trigger
-									>
-										<ExclamationTriangle
-											class="w-4 h-4 text-red-800 dark:text-red-400"
-										/>
-									</Tooltip.Trigger
-									>
+									<Tooltip.Trigger>
+										<ExclamationTriangle class="w-4 h-4 text-red-800 dark:text-red-400" />
+									</Tooltip.Trigger>
 									<Tooltip.Content>
 										<p>Mangler</p>
 									</Tooltip.Content>
@@ -168,11 +163,10 @@
 									</Tooltip.Trigger>
 									<Tooltip.Content>
 										<p>
-											Opgaven har {opgave['elev-tid']} elev time{elevtidNum(
-											opgave['elev-tid']
-										) === 1
-											? ''
-											: 'r'}
+											Opgaven har {opgave['elev-tid']} elev time{elevtidNum(opgave['elev-tid']) ===
+											1
+												? ''
+												: 'r'}
 										</p>
 									</Tooltip.Content>
 								{:else}
@@ -211,9 +205,9 @@
 								<Tooltip.Trigger>
 									<p
 										use:relativeTime={DateTime.fromFormat(
-												opgave.frist,
-												'd/M-yyyy HH:mm'
-											).toJSDate()}
+											opgave.frist,
+											'd/M-yyyy HH:mm'
+										).toJSDate()}
 									/>
 								</Tooltip.Trigger>
 								<Tooltip.Content>
@@ -222,7 +216,7 @@
 							</Tooltip.Root>
 						</Table.Cell>
 						<Table.Cell class="text-nowrap line-clamp-1 sm:table-cell"
-						>{opgave.opgavetitel}</Table.Cell
+							>{opgave.opgavetitel}</Table.Cell
 						>
 					</Table.Row>
 				{/each}
@@ -230,9 +224,9 @@
 		</Table.Body>
 	</Table.Root>
 	<!-- mobile version here, based on list not table, without tooltips -->
-	<div class="max-md:flex md:hidden flex-col w-full gap-2">
-		{#if opgaver}
-			{#each opgaver as opgave}
+	<div class="flex-col w-full gap-2 max-md:flex md:hidden">
+		{#if filteredOpgaver}
+			{#each filteredOpgaver as opgave}
 				<button
 					on:click={async () => await goto(`/opgave?id=${opgave.exerciseid}`)}
 					class="flex items-center w-full justify-between p-2 border-[1px] gap-2 rounded-md shadow-md cursor-pointer border-border"
