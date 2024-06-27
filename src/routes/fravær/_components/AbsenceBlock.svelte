@@ -32,7 +32,7 @@
 					? '*:bg-destructive'
 					: ''}
 				value={parseInt(generalAbsence?.heleåret_fravær_procent || '0')}
-				aria-label={parseInt(generalAbsence?.heleåret_fravær_procent || '0')}
+				aria-label={parseInt(generalAbsence?.heleåret_fravær_procent || '0').toString()}
 				max={10}
 			/>
 		</Card.Footer>
@@ -54,7 +54,7 @@
 					? '*:bg-destructive'
 					: ''}
 				value={parseInt(generalAbsence?.opgjort_fravær_procent || '0')}
-				aria-label={parseInt(generalAbsence?.opgjort_fravær_procent || '0')}
+				aria-label={parseInt(generalAbsence?.opgjort_fravær_procent || '0').toString()}
 				max={10}
 			/>
 		</Card.Footer>
