@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { NewTabLink, Spinner } from '$lib/components';
+	import { Spinner } from '$lib/components';
 	import { Badge } from '$lib/components/ui/badge';
 	import { Button } from '$lib/components/ui/button';
 	import { Card } from '$lib/components/ui/card';
@@ -14,6 +14,7 @@
 	import { DateTime, Interval } from 'luxon';
 	import { onMount } from 'svelte';
 	import SvelteMarkdown from 'svelte-markdown';
+	import { NewTabLink } from '$lib/components/links';
 
 	onMount(async () => {
 		await frontPageStore.fetch();

@@ -1,7 +1,6 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
 	import { page } from '$app/stores';
-	import LectioAvatar from '$lib/components/LectioAvatar.svelte';
 	import { MessageLink } from '$lib/components/links';
 	import { Badge } from '$lib/components/ui/badge';
 	import { Button } from '$lib/components/ui/button';
@@ -30,6 +29,7 @@
 	import SvelteMarkdown from 'svelte-markdown';
 	import { toast } from 'svelte-sonner';
 	import { fade, fly, slide } from 'svelte/transition';
+	import { Avatar } from '$lib/components/lectio';
 
 	let selectedMessage: string | null = null;
 	$: if (selectedMessage) {
@@ -394,7 +394,7 @@
 								tabindex="0"
 							>
 								{#key $informationStore}
-									<LectioAvatar
+									<Avatar
 										id={$informationStore?.students.find(
 											(student) => student.name == message.sender
 										)?.id ?? '123'}
@@ -556,7 +556,7 @@
 											</header>
 											<TextTooltip text={message.sender.name} class="size-10 sm:hidden">
 												{#key $informationStore}
-													<LectioAvatar id={message.sender.id} navn={message.sender.name} />
+													<Avatar id={message.sender.id} navn={message.sender.name} />
 												{/key}
 											</TextTooltip>
 										</div>
@@ -591,7 +591,7 @@
 									</button>
 									<TextTooltip text={message.sender.name} class="hidden size-10 sm:inline-flex">
 										{#key $informationStore}
-											<LectioAvatar id={message.sender.id} navn={message.sender.name} />
+											<Avatar id={message.sender.id} navn={message.sender.name} />
 										{/key}
 									</TextTooltip>
 								</div>
@@ -601,7 +601,7 @@
 									class="grid grid-cols-[auto_1fr] gap-2"
 								>
 									<TextTooltip text={message.sender.name} class="hidden size-10 sm:inline-flex">
-										<LectioAvatar id={message.sender.id} navn={message.sender.name} />
+										<Avatar id={message.sender.id} navn={message.sender.name} />
 									</TextTooltip>
 									<button
 										on:click={() => {
@@ -612,7 +612,7 @@
 										<div class="flex justify-start w-full gap-2">
 											<TextTooltip text={message.sender.name} class="size-10 sm:hidden">
 												{#key $informationStore}
-													<LectioAvatar id={message.sender.id} navn={message.sender.name} />
+													<Avatar id={message.sender.id} navn={message.sender.name} />
 												{/key}
 											</TextTooltip>
 											<header

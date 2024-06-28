@@ -7,7 +7,7 @@
 	import * as Table from '$lib/components/ui/table';
 	import { Progress } from '$lib/components/ui/progress';
 	import * as Accordion from '$lib/components/ui/accordion';
-	import NewTabLink from '$lib/components/links/NewTabLink.svelte';
+	import { NewTabLink } from '$lib/components/links';
 	import { decodeUserID } from '$lib/utils';
 	import { onMount } from 'svelte';
 

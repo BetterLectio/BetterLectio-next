@@ -51,7 +51,7 @@
 	</div>
 	<div class="{!isDesktop && 'page-container-x max-sm:pl-0'} flex w-full">
 		<div class="flex items-center pr-4 sm:pr-12" data-tauri-drag-region>
-			<a href="/" class="flex items-center gap-1 text-lg font-bold unstyled">
+			<a href="/static" class="flex items-center gap-1 text-lg font-bold unstyled">
 				<img src="/favicon.png" alt="BetterLectio Logo" class="size-8" />
 				<span class="hidden sm:block"> BetterLectio </span>
 			</a>

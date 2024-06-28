@@ -1,6 +1,5 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
-	import Badge from '$lib/components/ui/badge/badge.svelte';
 	import * as Command from '$lib/components/ui/command';
 	import { SITE_LINKS } from '$lib/links';
 	import { assignmentStore } from '$lib/stores';
@@ -8,7 +7,7 @@
 	import { get } from '$lib/utils';
 	import { onMount } from 'svelte';
 	import { writable } from 'svelte/store';
-	import AssignmentButton from './AssignmentButton.svelte';
+	import { Assignment } from '$lib/components/lectio';
 
 	let query = '';
 	let assignmentsLoaded = false;
@@ -100,8 +99,8 @@
 				{#if assignmentsLoaded}
 					{#each $filteredAssignments || [] as assignment, i}
 						<Command.Item>
-							<AssignmentButton
-								opgave={assignment}
+							<Assignment
+								{assignment}
 								class="p-0 m-0 border-0 shadow-none"
 								componentRoutes={false}
 								data-routeto={`/opgave?id=${assignment.exerciseid}`}

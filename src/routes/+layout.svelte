@@ -6,12 +6,8 @@
 	import {
 		AccountSheet,
 		Changelog,
-		SiteNavigation,
-		SiteSearch,
 		Spinner,
 		WelcomePage,
-		ScreenSize,
-		DrawerFix,
 		OfflineMode
 	} from '$lib/components';
 	import { Toaster } from '$lib/components/ui/sonner';
@@ -27,6 +23,8 @@
 	import { ModeWatcher } from 'mode-watcher';
 	import { page } from '$app/stores';
 	import { toTitleCase } from '$lib/utils/string';
+	import { SiteNavigation, SiteSearch } from '$lib/components/navigation';
+	import { DrawerFix, ScreenSize } from '$lib/components/services';
 
 	Settings.defaultLocale = 'da';
 

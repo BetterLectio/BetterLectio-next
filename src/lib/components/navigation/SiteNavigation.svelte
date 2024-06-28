@@ -1,11 +1,10 @@
 <script lang="ts">
-	import { SidebarLink, SiteHeader } from '.';
 	import { loadingStore, screenSizeStore, sidebarStore } from '$lib/stores';
 	import { SITE_LINKS } from '$lib/links';
 	import * as Drawer from '$lib/components/ui/drawer';
-	import { onMount } from 'svelte';
 	import { page } from '$app/stores';
 	import { isSmallScreen } from '$lib/utils';
+	import { SidebarLink, SiteHeader } from '$lib/components/navigation';
 
 	$: mainContentHeight = $screenSizeStore.height;
 

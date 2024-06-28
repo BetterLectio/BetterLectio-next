@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
 	import { Spinner } from '$lib/components';
-	import AssignmentButton from '$lib/components/AssignmentButton.svelte';
+	import { Assignment } from '$lib/components/lectio';
 	import { Badge } from '$lib/components/ui/badge';
 	import { Input } from '$lib/components/ui/input';
 	import { ValueSelect } from '$lib/components/ui/select';
@@ -10,8 +10,7 @@
 	import * as Tooltip from '$lib/components/ui/tooltip';
 	import { assignmentStore } from '$lib/stores';
 	import type { RawSimpleAssignment } from '$lib/types/assignments';
-	import { get, relativeTime } from '$lib/utils';
-	import { isDesktop } from '$lib/utils/environment';
+	import { relativeTime } from '$lib/utils';
 	import { DateTime } from 'luxon';
 	import { onMount } from 'svelte';
 	import Archive from 'svelte-radix/Archive.svelte';
@@ -165,9 +164,9 @@
 									<Tooltip.Content>
 										<p>
 											Opgaven har {opgave['elev-tid']} elev time{elevtidNum(opgave['elev-tid']) ===
-											1
-												? ''
-												: 'r'}
+										1
+											? ''
+											: 'r'}
 										</p>
 									</Tooltip.Content>
 								{:else}
@@ -217,7 +216,7 @@
 							</Tooltip.Root>
 						</Table.Cell>
 						<Table.Cell class="text-nowrap line-clamp-1 sm:table-cell"
-							>{opgave.opgavetitel}</Table.Cell
+						>{opgave.opgavetitel}</Table.Cell
 						>
 					</Table.Row>
 				{/each}
@@ -228,7 +227,7 @@
 	<div class="flex-col w-full gap-2 max-md:flex md:hidden">
 		{#if filteredOpgaver}
 			{#each filteredOpgaver as opgave}
-				<AssignmentButton {opgave} />
+				<Assignment assignment={opgave} />
 			{/each}
 		{/if}
 	</div>
