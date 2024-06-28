@@ -6,7 +6,7 @@
 	import { Button } from '$lib/components/ui/button';
 	import { Input } from '$lib/components/ui/input';
 	import { ValueSelect } from '$lib/components/ui/select';
-	import Separator from '$lib/components/ui/separator/separator.svelte';
+	import { Separator } from '$lib/components/ui/separator';
 	import { Skeleton } from '$lib/components/ui/skeleton';
 	import { TextTooltip } from '$lib/components/ui/tooltip';
 	import { LECTIO_API } from '$lib/lectio';
