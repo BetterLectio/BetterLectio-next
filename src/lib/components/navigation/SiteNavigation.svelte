@@ -23,11 +23,10 @@
 		$sidebarStore.isOpen = false;
 	};
 
-	$: if ($page.route) {
-		$sidebarStore.isOpen = false;
-	}
-
 	$: drawerOpen = !$isSmallScreen && $sidebarStore.isOpen;
+	const closeDrawer = () => {
+		if (!$isSmallScreen) $sidebarStore.isOpen = false;
+	}
 </script>
 
 <div>
@@ -69,7 +68,7 @@
 				<div class="py-10 pr-4">
 					{#each SITE_LINKS.main.links as link}
 						<Drawer.Close class="block w-full">
-							<SidebarLink {...link} />
+							<SidebarLink on:click={closeDrawer} {...link} />
 						</Drawer.Close>
 					{/each}
 				</div>
