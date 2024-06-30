@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
 	import { page } from '$app/stores';
-	import { NewTabLink, Spinner } from '$lib/components';
+	import { Spinner } from '$lib/components';
 	import { Badge } from '$lib/components/ui/badge';
 	import { Button } from '$lib/components/ui/button';
 	import { Separator } from '$lib/components/ui/separator';
@@ -11,6 +11,7 @@
 	import { get } from '$lib/utils/http';
 	import { onMount } from 'svelte';
 	import SvelteMarkdown from 'svelte-markdown';
+	import { NewTabLink } from '$lib/components/links';
 
 	const exerciseid = $page.url.searchParams.get('id');
 	if (!exerciseid) goto('/opgaver');
